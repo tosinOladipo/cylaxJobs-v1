@@ -1,19 +1,21 @@
-import { Control } from 'react-hook-form';
+import { Control } from "react-hook-form";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
+} from "@/components/ui/select";
 import {
+  FormDescription,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form';
+} from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { Switch } from "../ui/switch";
 
 type CustomFormFieldProps = {
   name: string;
@@ -27,7 +29,7 @@ export function CustomFormField({ name, control }: CustomFormFieldProps) {
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel className='capitalize'>{name}</FormLabel>
+          <FormLabel className="capitalize">{name}</FormLabel>
           <FormControl>
             <Input {...field} />
           </FormControl>
@@ -37,6 +39,39 @@ export function CustomFormField({ name, control }: CustomFormFieldProps) {
     />
   );
 }
+
+type CustomFormSwitchProps = {
+  name: string;
+  labelText?: string;
+  control: Control<any>;
+  desc: string;
+};
+
+export function CustomFormSwitch({
+  name,
+  labelText,
+  control,
+  desc,
+}: CustomFormSwitchProps) {
+  return (
+    <FormField
+      control={control}
+      name={name}
+      render={({ field }) => (
+        <FormItem className="flex flex-row items-center justify-between rounded-lg border p-4 shadow-sm">
+          <div className="space-y-2">
+            <FormLabel className="font-semibold">{labelText}</FormLabel>
+            <FormDescription className="text-xs">{desc}</FormDescription>
+          </div>
+          <FormControl>
+            <Switch checked={field.value} onCheckedChange={field.onChange} />
+          </FormControl>
+        </FormItem>
+      )}
+    />
+  );
+}
+
 
 type CustomFormSelectProps = {
   name: string;
@@ -57,7 +92,7 @@ export function CustomFormSelect({
       name={name}
       render={({ field }) => (
         <FormItem>
-          <FormLabel className='capitalize'>{labelText || name}</FormLabel>
+          <FormLabel className="capitalize">{labelText || name}</FormLabel>
           <Select onValueChange={field.onChange} defaultValue={field.value}>
             <FormControl>
               <SelectTrigger>

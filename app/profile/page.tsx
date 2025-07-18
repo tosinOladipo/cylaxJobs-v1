@@ -7,7 +7,7 @@ const Profile = () => {
       <div className="text-2xl font-bold capitalize">
         Create personal profile
       </div>
-      <p>Fill the form below</p>
+      <p className="mb-10 text-gray-500">Fill the form below</p>
       <AddProfileForm />
     </section>
   );

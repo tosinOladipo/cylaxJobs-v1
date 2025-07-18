@@ -5,15 +5,8 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+import { Form } from "@/components/ui/form";
+import { CustomFormField, CustomFormSwitch } from "@/components/form/FormComponents";
 
 const formSchema = z.object({
   username: z.string().min(2, {
@@ -40,20 +33,25 @@ const AddProfileForm = () => {
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input placeholder="shadcn" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Submit</Button>
+        <div className="grid gap-4 md:grid-cols-2 items-start">
+          {/* firstname */}
+          <CustomFormField name="firstname" control={form.control} />
+
+          {/* lastname */}
+          <CustomFormField name="lastname" control={form.control} />
+
+          {/* email */}
+          <CustomFormField name="email" control={form.control} />
+
+          {/* email */}
+          <CustomFormField name="phonenumber" control={form.control} />
+        </div>
+
+        <div>
+            <CustomFormSwitch name="employer" labelText="Are you an employer" desc="Switch on the button, if you are posting jobs" control={form.control}/> 
+        </div>
+
+        <Button type="submit">Create profile</Button>
       </form>
     </Form>
   );
