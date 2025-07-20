@@ -10,10 +10,11 @@ import DashboardFeatCandidateList from "./_components/DashboardFeatCandidateList
 import DashboardTitle from "./_components/DashboardTitle";
 
 async function DashboardPage() {
+
   return (
     <>
       <DashboardTitle pageTitle='Welcome back' pageDesc='Ready to jump back in' userFirstName="Tosin"/>
-      {/*Dashboar summary cards*/}
+      {/*Dashboard summary cards*/}
       <div className="grid lg:grid-cols-4 gap-5 pt-3">
           <DashboardJobCard/>
           <DashboardApplicationCard/>

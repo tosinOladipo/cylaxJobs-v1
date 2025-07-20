@@ -56,7 +56,7 @@ export const createAndEditJobSchema = z.object({
   jobDesc: z.string().min(2, {
     message: 'email must be at least 2 characters.',
   }),
-  jobindustry: z.string().min(2, {
+  jobIndustry: z.string().min(2, {
     message: 'phonenumber must be at least 2 characters.',
   }),
   jobCategory: z.string().min(2, {

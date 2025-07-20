@@ -2,7 +2,7 @@
 
 import { currentUser } from "@clerk/nextjs/server";
 
-import { profileType, UserType } from '@/utils/types';
+import { UserType } from '@/utils/types';
 import { createAndEditUserSchema, CreateAndEditUserType } from '@/utils/schema';
 import { prisma } from "../../db";
 
@@ -46,7 +46,7 @@ export const fetchUserInfo = async () => {
     return null;
   }
   try {
-    const userInfo: profileType | null = await prisma.user.findUnique({
+    const userInfo: UserType | null = await prisma.user.findUnique({
       where: {
         clerkId: user.id
       }, include: {
@@ -56,8 +56,9 @@ export const fetchUserInfo = async () => {
     if (!userInfo) {
       return null;
     }
-    const { id, firstname, lastname, email } = userInfo;
-    return { id, firstname, lastname, email };
+    const {id, firstname, lastname, email, roles} = userInfo;
+    const companyId = userInfo?.roles?.[0]?.companyId
+    return {id, firstname, lastname, email, roles, companyId}
   } catch (error) {
     return null;
   }

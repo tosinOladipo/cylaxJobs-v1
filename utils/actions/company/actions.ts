@@ -2,7 +2,7 @@
 
 import { currentUser } from "@clerk/nextjs/server";
 
-import { CommpanyType, profileType, UserType } from "@/utils/types";
+import { CommpanyType, profileType } from "@/utils/types";
 import {
   createAndEditCompanySchema,
   CreateAndEditCompanyType,

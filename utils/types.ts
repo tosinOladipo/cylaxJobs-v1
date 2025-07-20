@@ -1,13 +1,12 @@
 export type UserType = {
   id: string;
-  createdAt: Date;
-  updatedAt: Date;
   clerkId: string;
   firstname: string;
   lastname: string;
   email: string;
   phonenumber: string;
   employer: boolean;
+  roles?: RoleType[] | null
 };
 
 export type profileType = {
@@ -15,6 +14,7 @@ export type profileType = {
   firstname: string;
   lastname: string;
   email: string;
+  companyId?: string;
 };
 
 export type CommpanyType = {
@@ -31,8 +31,6 @@ export type CommpanyType = {
 
 export type RoleType = {
   id: string;
-  createdAt: Date;
-  updatedAt: Date;
   email: string;
   userRole: string;
   companyId: string;
@@ -44,7 +42,7 @@ export type JobType = {
   companyId: string;
   jobTitle: string;
   jobDesc: string;
-  jobindustry: string;
+  jobIndustry: string;
   jobCategory: string;
   jobType: string;
   experience: string;

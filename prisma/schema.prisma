@@ -22,11 +22,10 @@ model User {
   updatedAt   DateTime @updatedAt
   firstname   String
   lastname    String
-  email       String  @unique
+  email       String   @unique
   phonenumber String
   employer    Boolean
-  roles   Role[]
-  jobs Job[]
+  roles       Role[]
 
   @@map("users")
 }
@@ -41,6 +40,7 @@ model Company {
   phonenumber String
   description String
   location    String
+  jobs        Job[]
 
   @@map("companies")
 }
@@ -51,34 +51,32 @@ model Role {
   userRole  String
   companyId String
   createdAt DateTime @default(now())
-  user      User  @relation(fields: [userId], references: [id])
-  userId String
-  
+  user      User     @relation(fields: [userId], references: [id])
+  userId    String
+
   @@index([userId])
   @@map("roles")
 }
 
-
 model Job {
-  id        String   @id @default(uuid())
-  companyId String
-  createdAt DateTime @default(now())
-  jobTitle String
-  jobDesc String
-  jobindustry String
-  jobCategory String
-  jobType String
-  experience String
+  id            String   @id @default(uuid())
+  createdAt     DateTime @default(now())
+  jobTitle      String
+  jobDesc       String
+  jobIndustry   String
+  jobCategory   String
+  jobType       String
+  experience    String
   qualification String
-  salary String
-  email String
-  location String
-  state String
-  featured Boolean
-  endDate String
-  user      User  @relation(fields: [job_userId], references: [id])
-  job_userId String
-  
-  @@index([job_userId])
+  salary        String
+  email         String
+  location      String
+  state         String
+  featured      Boolean
+  endDate       String
+  company       Company  @relation(fields: [companyId], references: [id])
+  companyId     String
+
+  @@index([companyId])
   @@map("jobs")
 }

@@ -1,5 +1,4 @@
 "use client";
-import React from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import * as z from "zod";
@@ -16,9 +15,39 @@ import { createAndEditJobSchema, CreateAndEditJobType } from "@/utils/schema";
 import { nigerianStates } from "@/utils/data/nigeriaStates";
 import { jobPostType, qualification } from "@/utils/types";
 
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { createJobAction } from "@/utils/actions/jobs/actions";
+import { useSelector } from "react-redux";
+import { RootState } from "@/app/store/store";
+
 const JobForm = () => {
 
-  const companyId = "abc123"
+ const { user } = useSelector((state: RootState) => state.user);
+
+    // logic
+  const queryClient = useQueryClient();
+  const router = useRouter();
+  const { mutate, isPending } = useMutation({
+    mutationFn: (values: CreateAndEditJobType) => createJobAction(values),
+    onSuccess: (data) => {
+      if (!data) {
+        toast("Something went wrong", {
+            description: "Unable to create job",
+          })
+        return;
+      } 
+  
+      toast("Successfull", {
+            description: "Your job has been created",
+          })
+      queryClient.invalidateQueries({ queryKey: ['jobs'] });
+        router.push('/dashboard/manage-jobs')
+      // form.reset();
+    },
+  });
+
 
     
   // 1. Define your form.
@@ -26,9 +55,9 @@ const JobForm = () => {
   resolver: zodResolver(createAndEditJobSchema),
   defaultValues: {
     jobTitle: "",
-    companyId: companyId,
+    companyId: user?.companyId ?? "",
     jobDesc: "",
-    jobindustry: "",
+    jobIndustry: "",
     jobCategory: "",
     jobType: "",
     experience: "",
@@ -42,9 +71,14 @@ const JobForm = () => {
   },
 });
 
+
+
+
   function onSubmit(values: CreateAndEditJobType) {
+    mutate(values);
     console.log(values);
   }
+
 
   return (
     <section className="flex flex-col">
@@ -54,13 +88,19 @@ const JobForm = () => {
           className="flex flex-col gap-6"
         >
           <CustomFormField
-            name="JobTitle"
+            name="companyId"
+            labelText="Company Id"
+            control={form.control}
+            className="border-0 bg-blue-50 py-6"
+          />
+          <CustomFormField
+            name="jobTitle"
             labelText="Job Title"
             control={form.control}
             className="border-0 bg-blue-50 py-6"
           />
           <CustomFormTextArea
-            name="JobTitle"
+            name="jobDesc"
             labelText="Job Description"
             placeholder="Enter job description"
             message="Include rquirements and skills"

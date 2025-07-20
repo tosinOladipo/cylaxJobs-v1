@@ -31,7 +31,8 @@ function Header() {
 
   useEffect(() => {
     if (data) {
-      dispatch(setUser(data));
+      const {id, firstname, lastname, email, companyId} = data
+      dispatch(setUser({id, firstname, lastname, email, companyId}));
     }
   }, [data, dispatch]);
 

@@ -3,7 +3,14 @@ import DashboardTitle from '../../_components/DashboardTitle'
 import { Banknote, Briefcase, CircleCheck } from 'lucide-react'
 import JobForm from '../_components/JobForm'
 
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
+
 const AddJob = () => {
+  const queryClient = new QueryClient();
   return (
     <>
      <DashboardTitle pageTitle='Post job' pageDesc='Ready to jump back in'/>
@@ -23,7 +30,9 @@ const AddJob = () => {
                 <h3 className='capitalize'>Confirmation</h3>
             </div>
         </div>
-        <JobForm/>
+        <HydrationBoundary state={dehydrate(queryClient)}>
+          <JobForm/>
+        </HydrationBoundary>
      </section>
     </>
   )
