@@ -5,55 +5,85 @@ import { useForm } from "react-hook-form";
 import * as z from "zod";
 
 import { Button } from "@/components/ui/button";
+import { Form } from "@/components/ui/form";
 import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+  CustomFormField,
+  CustomFormSwitch,
+} from "@/components/form/FormComponents";
 
-const formSchema = z.object({
-  username: z.string().min(2, {
-    message: "Username must be at least 2 characters.",
-  }),
-});
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import { createAndEditCompanySchema, CreateAndEditCompanyType } from "@/utils/schema";
+import { createCompanyAction } from "@/utils/actions/company/actions";
+
 
 const AddCompanyForm = () => {
+
+  // logic
+const queryClient = useQueryClient();
+const router = useRouter();
+const { mutate, isPending } = useMutation({
+  mutationFn: (values: CreateAndEditCompanyType) => createCompanyAction(values),
+  onSuccess: (data) => {
+    if (!data) {
+      toast("Something went wrong", {
+          description: "Unable to create company",
+        })
+      return;
+    } 
+
+    toast("Successfull", {
+          description: "Your company has been created",
+        })
+    queryClient.invalidateQueries({ queryKey: ['companies'] });
+      router.refresh()
+      router.push('/')
+    // form.reset();
+  },
+});
+
+
   // 1. Define your form.
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const form = useForm<z.infer<typeof createAndEditCompanySchema>>({
+    resolver: zodResolver(createAndEditCompanySchema),
     defaultValues: {
-      username: "",
+      companyName: "",
+      description: "",
+      email: "",
+      phonenumber: "",
+      location: ""
     },
   });
 
-  // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    // Do something with the form values.
-    // ✅ This will be type-safe and validated.
-    console.log(values);
-  }
+function onSubmit(values: CreateAndEditCompanyType) {
+  mutate(values);
+  console.log(values)
+}
 
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-        <FormField
-          control={form.control}
-          name="username"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Username</FormLabel>
-              <FormControl>
-                <Input placeholder="shadcn" {...field} />
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
-        />
-        <Button type="submit">Submit</Button>
+        <div className="grid gap-4 md:grid-cols-2 items-start">
+          {/* firstname */}
+          <CustomFormField name="companyName" control={form.control} />
+
+          {/* lastname */}
+          <CustomFormField name="description" control={form.control} />
+
+          {/* email */}
+          <CustomFormField name="email" control={form.control} />
+
+          {/* email */}
+          <CustomFormField name="phonenumber" control={form.control} />
+
+          {/* email */}
+          <CustomFormField name="location" control={form.control} />
+        </div>
+
+        <Button type="submit" className="w-full py-6 capitalize" disabled={isPending}>
+          {isPending ? 'loading...' : 'create company'}
+        </Button>
       </form>
     </Form>
   );

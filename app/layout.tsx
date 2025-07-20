@@ -4,6 +4,13 @@ import { ClerkProvider } from "@clerk/nextjs";
 import "./globals.css";
 import Header from "./_components/Header";
 import Providers from "./provider/provider";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from '@tanstack/react-query';
+
+import { fetchUserInfo } from "@/utils/actions/users/actions";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -12,17 +19,27 @@ export const metadata: Metadata = {
   description: "AI-powered platform helps HR teams do more with less",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+
+  const queryClient = new QueryClient();
+
+  await queryClient.prefetchQuery({
+    queryKey: ['user'],
+    queryFn: () => fetchUserInfo(),
+  });
+
   return (
     <ClerkProvider>
       <html lang="en">
         <body className={`${inter.className}`}>
           <Providers>
-            <Header />
+            <HydrationBoundary state={dehydrate(queryClient)}>
+              <Header />
+            </HydrationBoundary>
             {children}
           </Providers>
         </body>

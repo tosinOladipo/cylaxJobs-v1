@@ -1,9 +1,11 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Toaster } from "@/components/ui/sonner"
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { useState } from "react";
+import { Toaster } from "@/components/ui/sonner";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { store } from "@/app/store/store";
+import { Provider } from "react-redux";
 
 const Providers = ({ children }: { children: React.ReactNode }) => {
   const [queryClient] = useState(
@@ -20,13 +22,13 @@ const Providers = ({ children }: { children: React.ReactNode }) => {
   );
 
   return (
-     <>
-     <Toaster/>
+    <Provider store={store}>
+      <Toaster />
       <QueryClientProvider client={queryClient}>
         {children}
         <ReactQueryDevtools initialIsOpen={false} />
       </QueryClientProvider>
-      </>
+    </Provider>
   );
 };
 export default Providers;

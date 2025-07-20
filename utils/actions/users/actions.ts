@@ -1,41 +1,64 @@
 'use server';
 
-import prisma from '@/utils/db';
-import { auth } from "@clerk/nextjs/server";
+import { currentUser } from "@clerk/nextjs/server";
 
-import { redirect } from 'next/navigation';
-import { Prisma } from '@prisma/client';
-import dayjs from 'dayjs';
-import { UserType } from '@/utils/types';
+import { profileType, UserType } from '@/utils/types';
 import { createAndEditUserSchema, CreateAndEditUserType } from '@/utils/schema';
+import { prisma } from "../../db";
 
 
-async function authenticateAndRedirect(): Promise<string | null> {
-  const { userId } = await auth()
-  if (!userId) {
-    redirect('/');
+const getAuthUser = async () => {
+  const user = await currentUser();
+  if (!user) {
+    throw new Error("You must be logged in to access this route")
   }
-  return userId;
+  return user;
 }
+
 
 export async function createUserAction(
   values: CreateAndEditUserType
 ): Promise<UserType | null> {
   
-  const userId = authenticateAndRedirect();
+  const user = await getAuthUser();
   try {
     // Validate the values on the backend;
     createAndEditUserSchema.parse(values);
-    const user: UserType = await prisma.user.create({
+    const profile: UserType = await prisma.user.create({
       data: {
         ...values,
-
-        clerkId: userId,
+        clerkId: user.id,
       },
     });
-    return user;
+    return profile;
   } catch (error) {
     console.error(error);
     return null;
   }
 }
+
+
+
+export const fetchUserInfo = async () => {
+  const user = await currentUser();
+
+  if (!user) {
+    return null;
+  }
+  try {
+    const userInfo: profileType | null = await prisma.user.findUnique({
+      where: {
+        clerkId: user.id
+      }, include: {
+        roles: true,
+      }
+    });
+    if (!userInfo) {
+      return null;
+    }
+    const { id, firstname, lastname, email } = userInfo;
+    return { id, firstname, lastname, email };
+  } catch (error) {
+    return null;
+  }
+};

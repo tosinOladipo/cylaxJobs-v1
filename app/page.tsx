@@ -4,7 +4,8 @@ import CategoryCarousel from "./_components/CategoryCarousel";
 import Container from "@/components/container";
 import FeaturedJobs from "./_components/FeaturedJobs";
 
-export default function Home() {
+export default async function Home () {
+
   return (
     <main className="pb-10">
       <Hero />

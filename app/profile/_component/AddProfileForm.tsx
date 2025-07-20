@@ -15,9 +15,42 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { createUserAction } from "@/utils/actions/users/actions";
 import { useRouter } from "next/navigation";
-import { createAndEditUserSchema } from "@/utils/schema";
+import { createAndEditUserSchema, CreateAndEditUserType } from "@/utils/schema";
+
 
 const AddProfileForm = () => {
+
+  // logic
+const queryClient = useQueryClient();
+const router = useRouter();
+const { mutate, isPending } = useMutation({
+  mutationFn: (values: CreateAndEditUserType) => createUserAction(values),
+  onSuccess: (data) => {
+    if (!data) {
+      toast("Something went wrong", {
+          description: "Unable to create profile",
+        })
+      return;
+    } 
+
+    toast("Successfull", {
+          description: "Your profile has been created",
+        })
+    queryClient.invalidateQueries({ queryKey: ['users'] });
+
+    if (data.employer === true) {
+        router.replace('/profile/company');
+    }
+
+    if (data.employer === false) {
+      router.refresh()
+      router.push('/')
+    }
+    // form.reset();
+  },
+});
+
+
   // 1. Define your form.
   const form = useForm<z.infer<typeof createAndEditUserSchema>>({
     resolver: zodResolver(createAndEditUserSchema),
@@ -26,15 +59,14 @@ const AddProfileForm = () => {
       lastname: "",
       email: "",
       phonenumber: "",
+      employer: false
     },
   });
 
-  // 2. Define a submit handler.
-  function onSubmit(values: z.infer<typeof createAndEditUserSchema>) {
-    // Do something with the form values.
-    // This will be type-safe and validated.
-    console.log(values);
-  }
+function onSubmit(values: CreateAndEditUserType) {
+  mutate(values);
+  console.log(values)
+}
 
   return (
     <Form {...form}>
@@ -62,8 +94,8 @@ const AddProfileForm = () => {
           />
         </div>
 
-        <Button type="submit" className="w-full py-6">
-          Create profile
+        <Button type="submit" className="w-full py-6 capitalize" disabled={isPending}>
+          {isPending ? 'loading...' : 'create profile'}
         </Button>
       </form>
     </Form>

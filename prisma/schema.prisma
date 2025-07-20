@@ -17,15 +17,16 @@ datasource db {
 
 model User {
   id          String   @id @default(uuid())
-  clerkId     String
+  clerkId     String   @unique
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
   firstname   String
   lastname    String
-  email       String
+  email       String  @unique
   phonenumber String
   employer    Boolean
   roles   Role[]
+  jobs Job[]
 
   @@map("users")
 }
@@ -36,7 +37,7 @@ model Company {
   updatedAt   DateTime @updatedAt
   companyName String
   companyLogo String
-  email       String
+  email       String   @unique
   phonenumber String
   description String
   location    String
@@ -55,4 +56,29 @@ model Role {
   
   @@index([userId])
   @@map("roles")
+}
+
+
+model Job {
+  id        String   @id @default(uuid())
+  companyId String
+  createdAt DateTime @default(now())
+  jobTitle String
+  jobDesc String
+  jobindustry String
+  jobCategory String
+  jobType String
+  experience String
+  qualification String
+  salary String
+  email String
+  location String
+  state String
+  featured Boolean
+  endDate String
+  user      User  @relation(fields: [job_userId], references: [id])
+  job_userId String
+  
+  @@index([job_userId])
+  @@map("jobs")
 }

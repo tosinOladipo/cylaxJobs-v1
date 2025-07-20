@@ -7,15 +7,12 @@ import DashboardChart from "./_components/DashboardChart";
 import { Button } from "@/components/ui/button";
 import DashboardFeatJobList from "./_components/DashboardFeatJobList";
 import DashboardFeatCandidateList from "./_components/DashboardFeatCandidateList";
+import DashboardTitle from "./_components/DashboardTitle";
 
-function DashboardPage() {
+async function DashboardPage() {
   return (
-    <article className="flex flex-col gap-2">
-      <h1 className="text-2xl font-semibold">
-        Welcome back <span className="text-blue-400">Tosin!</span>
-      </h1>
-      <p className="text-sm text-gray-500">Ready to jump back in?</p>
-
+    <>
+      <DashboardTitle pageTitle='Welcome back' pageDesc='Ready to jump back in' userFirstName="Tosin"/>
       {/*Dashboar summary cards*/}
       <div className="grid lg:grid-cols-4 gap-5 pt-3">
           <DashboardJobCard/>
@@ -46,7 +43,7 @@ function DashboardPage() {
 
       <DashboardFeatCandidateList/>
 
-    </article>
+    </>
   );
 }
 

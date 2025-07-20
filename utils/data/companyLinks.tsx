@@ -15,7 +15,7 @@ const companylinks: NavLink[] = [
   },
   {
     icon: <BriefcaseBusiness size={15}/>,
-    href: '/manage-jobs',
+    href: '/dashboard/manage-jobs',
     label: 'Manage jobs',
   },
   {
