@@ -33,3 +33,25 @@ export async function createJobAction(
     return null;
   }
 }
+
+
+export const fetchJobsAction = async (companyId: string) => {
+  const user = await currentUser();
+
+  if (!user) {
+    return null;
+  }
+  try {
+    const jobs: JobType[] | null = await prisma.job.findMany({
+      where: {
+        companyId: companyId
+      }
+    });
+    if (!jobs) {
+      return null;
+    }
+    return jobs
+  } catch (error) {
+    return null;
+  }
+};

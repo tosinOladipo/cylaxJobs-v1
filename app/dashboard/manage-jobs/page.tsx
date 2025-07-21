@@ -4,7 +4,14 @@ import JobTable from './_components/JobTable'
 import DashboardTitle from '../_components/DashboardTitle'
 import Link from 'next/link'
 
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
+
 const ManageJobs = () => {
+  const queryClient = new QueryClient();
   return (
     <>
     <DashboardTitle pageTitle='Manage jobs' pageDesc='Ready to jump back in'/>
@@ -16,7 +23,9 @@ const ManageJobs = () => {
                      <Button asChild className='capitalize'><Link href="/dashboard/manage-jobs/add-job">Add new job</Link></Button>
                 </div>
             </div>
+        <HydrationBoundary state={dehydrate(queryClient)}>
         <JobTable/>    
+        </HydrationBoundary>    
       </div>
     </>
   )

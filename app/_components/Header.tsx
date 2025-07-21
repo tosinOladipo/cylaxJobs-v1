@@ -28,13 +28,16 @@ function Header() {
     queryKey: ["user"],
     queryFn: () => fetchUserInfo(),
   });
+  
 
-  useEffect(() => {
+  
+  const handleSetUser = () => {
     if (data) {
-      const {id, firstname, lastname, email, companyId} = data
-      dispatch(setUser({id, firstname, lastname, email, companyId}));
+      const { id, firstname, lastname, email, companyId } = data;
+      dispatch(setUser({ id, firstname, lastname, email, companyId }));
     }
-  }, [data, dispatch]);
+  };
+
 
   return (
     <section className="flex flex-col w-full fixed top-0 z-10">
@@ -48,7 +51,9 @@ function Header() {
             <div className="w-auto flex gap-3">
               <SignedIn>
                 <div className="flex gap-2">
-                  <Button asChild>
+                  <Button asChild
+                    onClick={handleSetUser}
+                  >
                     <Link href="/dashboard">Dashboard</Link>
                   </Button>
                   <SignOutButton>
